@@ -1,0 +1,30 @@
+name: Maven Build & Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [microservice-1, microservice-2, microservice-3]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build ${{ matrix.service }}
+        run: mvn -B package --file ${{ matrix.service }}/pom.xml
+
+      - name: Run Security Scan (Fake)
+        run: echo "Running security scan for ${{ matrix.service }}"
